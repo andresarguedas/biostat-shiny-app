@@ -271,11 +271,12 @@ ui <- navbarPage(
              
              br(),
              
-             # add question about model equation
-             # then, after they respond, add the actual model equation
+             p("Here's the equation for the interaction model we want to fit:"),
+             
+             withMathJax("$$Y_i = \\beta_0 + \\beta_1 X_{1i} + \\beta_2 X_{2i} + \\beta_3 X_{1i} X_{2i} + \\varepsilon_i$$"),
              
              p(strong("Question 2:"),
-               "Using the model equation (and your intuition), find values for the intercept and coefficients to match the lines of best fit we already plotted. The plot below (on the right) will change to reflect the values you choose."),
+               "Using the model equation (and your intuition), find values for the intercept and coefficients to match the lines of best fit we already plotted. The plot below (on the right) will change to reflect the values you choose. (You can use decimals!)"),
              
              splitLayout(cellWidths = rep("25%", 4),
                          numericInput("p2q2_beta0", label = withMathJax("$$\\beta_0$$"),
@@ -400,7 +401,7 @@ ui <- navbarPage(
            
            h2("TO-DO"),
            
-           p("Potentially some rewording. Add model equation to Part 2. Add color to the feedback that pops up in Part 1. Add dataset downloads here in the appendix. Standardize code (there's a lot of it!). If time, try to build an 'export' option for students to export their correct answers. Make front page less blank (add images?). Add copious comments to code."))
+           p("Potentially some rewording. Add color to the feedback that pops up in Part 1. Add dataset downloads here in the appendix. Standardize code (there's a lot of it!). If time, try to build an 'export' option for students to export their correct answers. Make front page less blank (add images?). Add copious comments to code."))
 )
 
 
