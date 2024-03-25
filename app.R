@@ -9,7 +9,7 @@ ui <- navbarPage(
     strong("Building Intuition for Interaction Terms")
   ),
   
-  # customizing colors and creating CSS classes
+  # adding TeX capability, customizing colors, and creating CSS classes
   tags$head(
     tags$link(rel="stylesheet", 
               href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css", integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH", 
@@ -52,6 +52,7 @@ ui <- navbarPage(
     )
   ),
   
+  # opening tab
   tabPanel("Overview",
            
            verticalLayout(h3(strong("Welcome to Building Intuition for Interaction Terms!")),
@@ -62,6 +63,7 @@ ui <- navbarPage(
                             strong("Part 1"),
                             "tab. As you go through the activity, be sure to discuss your thoughts and answers with your classmates nearby."))
            
+        # leaving this just in case I want to revert the layout
            # fluidRow(
            #   column(width = 7,
            #          h3(strong("Welcome to Building Intuition for Interaction Terms!")),
@@ -83,22 +85,25 @@ ui <- navbarPage(
            # )
   ),
   
+  # tab for part 1
   tabPanel("Part 1",
            
+           # enable showing/hiding of elements
            useShinyjs(),
            
            verticalLayout(
-             div(class = "rounded-box-solid",
+             div(class = "rounded-box-solid", # put background inside a box
                  p("The Lung Health Study (LHS) was a multicenter randomized clinical trial from the 1980s and 1990s, investigating whether smoking intervention and use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the 5-year follow-up period. A total of 5,887 participants (smokers, aged 35-59 years old) were recruited from 10 clinial centers in the US and Canada between the years of 1986 to 1988. They were randomized into three groups for treatment and followed for several years. However, for this activity, we are looking exclusively at baseline measurements and demographics. The full, de-identified dataset can be downloaded in the final tab."),
                  
                  p("We will be looking at the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) over FVC (forced vital capacity)."),
              ),
              
-             br(),
+             br(), # these are line breaks!
              
              p(strong("Question 1:"),
                "To examine the distribution of our lung function measure, a _____ should be used. To visualize the relationship between BMI and lung function, we can use a _____."),
              
+             # putting multiple elements in the same row
              splitLayout(cellWidths = rep("25%", 4),
                          radioButtons("p1q1_1", label = "First blank:",
                                       choices = list("histogram",
@@ -113,9 +118,11 @@ ui <- navbarPage(
              
              br(),
              
+             # text to appear till they answer the question
              p(id = "eda_placeholder",
                em("EDA plots will appear here after you submit the correct answer to Question 1.")),
              
+             # hidden elements don't appear till a question is answered
              shinyjs::hidden(plotOutput("hist_bmi")),
              br(),
              shinyjs::hidden(plotOutput("hist_fev")),
@@ -153,6 +160,8 @@ ui <- navbarPage(
              p(strong("Question 4:"),
                "Now, let's fit a linear regression model with main effects for BMI and sex, and an interaction between the two. Which of the following equations represents our regression model?"),
              
+             # a bit complicated because it uses TeX...
+             # (there might be an easier way using withMathJax())
              selectizeInput("p1q4", label = NULL,
                             width = "55%",
                             choices = list("Y_i = \\beta_0 + \\beta_1 X_{1i} + \\beta_2 X_{2i} + \\varepsilon_i" = 1,
@@ -173,7 +182,7 @@ ui <- navbarPage(
                             )
              ),
              
-             splitLayout(cellWidths = c("20%", "40%"),
+             splitLayout(cellWidths = c("20%", "40%"), # turns out these don't need to sum to 100
                          actionButton("p1q4_go",
                                       label = "Submit"),
                          shinyjs::hidden(htmlOutput("p1q4_correct"))),
@@ -226,6 +235,7 @@ ui <- navbarPage(
            )
   ),
   
+  # tab for part 2
   tabPanel("Part 2",
            verticalLayout(
              div(class = "rounded-box-solid",
@@ -390,7 +400,7 @@ ui <- navbarPage(
            
            h2("TO-DO"),
            
-           p("Potentially some rewording. Add color to the feedback that pops up in Part 1. Add dataset downloads here in the appendix. Standardize code (there's a lot of it!). If time, try to build an 'export' option for students to export their correct answers. Make front page less blank (add images?). Add copious comments to code."))
+           p("Potentially some rewording. Add model equation to Part 2. Add color to the feedback that pops up in Part 1. Add dataset downloads here in the appendix. Standardize code (there's a lot of it!). If time, try to build an 'export' option for students to export their correct answers. Make front page less blank (add images?). Add copious comments to code."))
 )
 
 
