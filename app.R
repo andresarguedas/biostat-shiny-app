@@ -57,11 +57,11 @@ ui <- navbarPage(
            
            verticalLayout(h3(strong("Welcome to Building Intuition for Interaction Terms!")),
                           
-                          p("This activity is meant to help you learn about",
+                          p("This activity will help you learn about",
                             strong("interaction terms"),
-                            "in linear models. In the process, we'll also talk about centering predictors. There are two parts to this activity -- start in the",
+                            "in linear models. In the process, we'll also talk about centering predictors. The activity has two parts -- start in the",
                             strong("Part 1"),
-                            "tab. As you go through the activity, be sure to discuss your thoughts and answers with your classmates nearby."))
+                            "tab. As you go through the activity, discuss your thoughts and answers with your classmates nearby."))
            
         # leaving this just in case I want to revert the layout
            # fluidRow(
@@ -93,9 +93,9 @@ ui <- navbarPage(
            
            verticalLayout(
              div(class = "rounded-box-solid", # put background inside a box
-                 p("The Lung Health Study (LHS) was a multicenter randomized clinical trial from the 1980s and 1990s, investigating whether smoking intervention and use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the 5-year follow-up period. A total of 5,887 participants (smokers, aged 35-59 years old) were recruited from 10 clinial centers in the US and Canada between the years of 1986 to 1988. They were randomized into three groups for treatment and followed for several years. However, for this activity, we are looking exclusively at baseline measurements and demographics. The full, de-identified dataset can be downloaded in the final tab."),
+                 p("The Lung Health Study (LHS) was a multicenter randomized clinical trial in the 1980s and 1990s, investigating whether smoking intervention and use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the 5-year follow-up period. A total of 5,887 participants (smokers aged 35-59 years old) were recruited from 10 clinical centers in the US and Canada from 1986 to 1988. They were randomized into three groups for treatment and followed for several years. However, for this activity, we are looking exclusively at baseline measurements and demographics. The full, de-identified dataset can be downloaded in the Appendix tab."),
                  
-                 p("We will be looking at the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) over FVC (forced vital capacity)."),
+                 p("We will examine the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) to FVC (forced vital capacity)."),
              ),
              
              br(), # these are line breaks!
@@ -436,7 +436,7 @@ server <- function(input, output, session) {
   output$hist_fev <- renderPlot({
     ggplot(data = lungs) +
       geom_histogram(aes(x = FEVFVC02), bins = 30) +
-      labs(x = "FEV/FVC % at baseline",
+      labs(x = "FEV1/FVC % at baseline",
            y = "Count",
            title = "Distribution of lung function at baseline",
            subtitle = "      (Higher values are better!)") +
@@ -492,8 +492,8 @@ server <- function(input, output, session) {
                        y = G3),
                    fill = "#Bbbbf6") +
       labs(x = "Urban/rural status",
-           y = "Final math grade",
-           title = "Distribution of final math grade by urban/rural status") +
+           y = "Final math score",
+           title = "Distribution of final math score by urban/rural status") +
       theme_minimal()
   })
   
@@ -510,7 +510,7 @@ server <- function(input, output, session) {
                   method = "lm",
                   se = FALSE) +
       labs(x = "Age",
-           y = "Final math grade",
+           y = "Final math score",
            color = "Urban/rural",
            title = "Lines of best fit for rural and urban students") +
       scale_color_manual(values = c("Rural" = "red3",
@@ -534,7 +534,7 @@ server <- function(input, output, session) {
                   color = "blue3",
                   linewidth = 1) +
       labs(x = "Age",
-           y = "Final math grade",
+           y = "Final math score",
            title = "Lines created with your 'guesses' for coefficients") +
       theme_minimal()
   })
