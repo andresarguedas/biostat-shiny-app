@@ -45,6 +45,20 @@ beta_plot <- function(change) {
              name = fct_relevel(name, "Intercept", "BMI",
                                 "Sex (M)", "BMI * Sex"))
     
+    # dummy df to artifically set the limits,
+    # to match the plot created when c \neq 0
+    dummy_df <- tibble(name = c(rep("Intercept", 2),
+                                rep("BMI", 2),
+                                rep("Sex (M)", 2),
+                                rep("BMI * Sex", 2)),
+                       beta = c(68, 62,
+                                NA, NA,
+                                2, -6.5,
+                                NA, NA)) %>%
+      mutate(name = as.factor(name),
+             name = fct_relevel(name, "Intercept", "BMI",
+                                "Sex (M)", "BMI * Sex"))
+    
     plot <- df %>%
       ggplot() +
       geom_point(aes(x = "",
@@ -52,6 +66,9 @@ beta_plot <- function(change) {
       geom_errorbar(aes(x = "",
                         ymin = ci_low,
                         ymax = ci_high)) +
+      geom_blank(data = dummy_df,
+                 aes(x = "",
+                     y = beta)) +
       facet_wrap(~name,
                  scales = "free") +
       labs(x = "",
@@ -87,6 +104,23 @@ beta_plot <- function(change) {
       mutate(model = as.factor(model),
              model = fct_relevel(model, "Original", "Adjusted"))
     
+    # dummy df to artifically set the limits,
+    # since each plot in the facet_wrap() needs different limits
+    dummy_df <- tibble(model = c("Original", "Adjusted", rep(NA, 6)),
+                       name = c(rep("Intercept", 2),
+                                rep("BMI", 2),
+                                rep("Sex (M)", 2),
+                                rep("BMI * Sex", 2)),
+                       beta = c(68, 62,
+                                NA, NA,
+                                2, -6.5,
+                                NA, NA)) %>%
+      mutate(model = as.factor(model),
+             model = fct_relevel(model, "Original", "Adjusted"),
+             name = as.factor(name),
+             name = fct_relevel(name, "Intercept", "BMI",
+                                "Sex (M)", "BMI * Sex"))
+    
     plot <- ggplot(data = full_df) +
       geom_point(aes(x = model,
                      y = beta,
@@ -96,6 +130,9 @@ beta_plot <- function(change) {
                         ymin = ci_low,
                         ymax = ci_high,
                         color = model)) +
+      geom_blank(data = dummy_df,
+                 aes(x = model,
+                     y = beta)) +
       facet_wrap(~name,
                  scales = "free") +
       scale_color_manual(values = c("Original" = "black",
