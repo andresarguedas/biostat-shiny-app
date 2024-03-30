@@ -239,7 +239,7 @@ ui <- navbarPage(
   tabPanel("Part 2",
            verticalLayout(
              div(class = "rounded-box-solid",
-                 p("In this part of the activity, we'll look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal, including several potential predictors as well as our variable of interest: their final math score at the end of the academic year."),
+                 p("In this part of the activity, we'll look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal, including several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The dataset can be downloaded in the Appendix tab."),
                  
                  p("We want to evaluate the effect of age and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether the effect of age on final math score varies between students living in rural vs. urban areas."),
              ),
@@ -393,15 +393,14 @@ ui <- navbarPage(
            
            h2("Technical Details"),
            
-           p("This activity is a Shiny app created using R. Source code is available on GitHub (link forthcoming)."),
+           p("This activity is a Shiny app created using R. Source code is available on ",
+             a(href = "https://github.com/david-mcgowan/thesis", "GitHub",
+               .noWS = "after"),
+             "."),
            
            h2("Acknowledgements"),
            
-           p("This will be the last thing I add to the app!"),
-           
-           h2("TO-DO"),
-           
-           p("Potentially some rewording. Add color to the feedback that pops up in Part 1. Add dataset downloads here in the appendix. Standardize code (there's a lot of it!). If time, try to build an 'export' option for students to export their correct answers. Make front page less blank (add images?). Add copious comments to code."))
+           p("This will be the last thing I add to the app!"))
 )
 
 
