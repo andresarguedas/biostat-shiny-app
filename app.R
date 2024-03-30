@@ -410,17 +410,17 @@ ui <- navbarPage(
 server <- function(input, output, session) {
   output$p1q1_correct <- renderText({
     if(input$p1q1_1 == "histogram" & input$p1q1_2 == "scatterplot") {
-      "<b>Correct!</b> <br> (Click the button again to see the plots.)"
+      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(Click the button again to see the plots.)</p>'
     } else {
-      "<b>Not quite -- try again.</b>"
+      '<p style="color:red;">Not quite -- try again.</p>'
     }
   })
   
   output$p1q4_correct <- renderText({
     if(input$p1q4 == 4) {
-      "<b>Correct!</b> <br> (Click the button again to see the model output.)"
+      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(Click the button again to see the model output.)</p>'
     } else {
-      "<b>Not quite -- try again.</b>"
+      '<p style="color:red;">Not quite -- try again.</p>'
     }
   })
   
