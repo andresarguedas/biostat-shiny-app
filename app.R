@@ -104,6 +104,7 @@ ui <- navbarPage(
                "To examine the distribution of our lung function measure, a _____ should be used. To visualize the relationship between BMI and lung function, we can use a _____."),
              
              # putting multiple elements in the same row
+             # NOTE: shinyjs::hidden() makes an element hidden until a specific action happens
              splitLayout(cellWidths = rep("25%", 4),
                          radioButtons("p1q1_1", label = "First blank:",
                                       choices = list("histogram",
@@ -113,7 +114,7 @@ ui <- navbarPage(
                                       choices = list("histogram",
                                                      "scatterplot",
                                                      "bar chart")),
-                         actionButton("p1q1_3", label = "Submit"),
+                         actionButton("p1q1_go", label = "Submit"),
                          shinyjs::hidden(htmlOutput("p1q1_correct"))),
              
              br(),
@@ -135,7 +136,7 @@ ui <- navbarPage(
              
              textAreaInput("p1q2", label = NULL,
                            placeholder = "Write your insights...",
-                           width = "55%"),
+                           width = "55%"), # not too narrow, not too wide
              
              br(),
              
@@ -161,7 +162,7 @@ ui <- navbarPage(
                "Now, let's fit a linear regression model with main effects for BMI and sex, and an interaction between the two. Which of the following equations represents our regression model?"),
              
              # a bit complicated because it uses TeX...
-             # (there might be an easier way using withMathJax())
+             # (there might be an easier way using withMathJax(), but I already did this)
              selectizeInput("p1q4", label = NULL,
                             width = "55%",
                             choices = list("Y_i = \\beta_0 + \\beta_1 X_{1i} + \\beta_2 X_{2i} + \\varepsilon_i" = 1,
@@ -182,7 +183,7 @@ ui <- navbarPage(
                             )
              ),
              
-             splitLayout(cellWidths = c("20%", "40%"), # turns out these don't need to sum to 100
+             splitLayout(cellWidths = c("20%", "40%"), # turns out these don't need to sum to 100!
                          actionButton("p1q4_go",
                                       label = "Submit"),
                          shinyjs::hidden(htmlOutput("p1q4_correct"))),
@@ -195,7 +196,7 @@ ui <- navbarPage(
              p(id = "model_placeholder",
                em("This plot will appear after you answer Question 4.")),
              
-             shinyjs::hidden(verbatimTextOutput("model")),
+             shinyjs::hidden(verbatimTextOutput("model_pt1")),
              
              br(),
              
@@ -320,7 +321,7 @@ ui <- navbarPage(
                "Now consider the interpretations of our model coefficients. Select which term(s) have interpretation(s) subject to each limitation."),
              
              withMathJax(),
-             splitLayout(cellWidths = c("33%", "33%", "34%"),
+             splitLayout(cellWidths = c("33%", "33%", "33%"),
                          checkboxGroupInput("p2q3_rural",
                                             label = HTML("Interpretation is limited<br> to rural students:"),
                                             choices = c("$$\\beta_0$$" = "beta_0",
@@ -342,14 +343,14 @@ ui <- navbarPage(
                                                         "$$\\beta_2$$" = "beta_2",
                                                         "$$\\beta_3$$" = "beta_3"))),
              
-             splitLayout(cellWidths = c("33%", "33%", "34%"),
+             splitLayout(cellWidths = c("33%", "33%", "33%"),
                          actionButton("p2q3_rural_submit",
                                       label = "Submit"),
                          actionButton("p2q3_urban_submit",
                                       label = "Submit"),
                          actionButton("p2q3_age0_submit",
                                       label = "Submit")),
-             splitLayout(cellWidths = c("33%", "33%", "34%"),
+             splitLayout(cellWidths = c("33%", "33%", "33%"),
                          shinyjs::hidden(htmlOutput("p2q3_rural_correct")),
                          shinyjs::hidden(htmlOutput("p2q3_urban_correct")),
                          shinyjs::hidden(htmlOutput("p2q3_age0_correct"))),
@@ -374,18 +375,20 @@ ui <- navbarPage(
              br(),
            )
   ),
+  
+  # tab for appendix
   tabPanel("Appendix",
            h2("Data"),
            
-           splitLayout(cellWidths = c("25%", "25%", "50%"),
+           splitLayout(cellWidths = c("25%", "25%"),
                        downloadButton("download_lungs",
                                       label = "Download lung data"),
                        downloadButton("download_math",
-                                      label = "Download student data"),
-                       NULL),
+                                      label = "Download student data")),
            
            h2("References"),
            
+           # code looks ugly bc of citation formatting
            p('Cortez, P., and Silva, A. (2008), "Using Data Mining to Predict Secondary School Student Performance," in ',
              em("Proceedings of 5th Annual Future Business Technology Conference, Porto, 2008",
                 .noWS = "after"),
@@ -416,6 +419,7 @@ ui <- navbarPage(
  
 # define server
 server <- function(input, output, session) {
+  # feedback for P1Q1
   output$p1q1_correct <- renderText({
     if(input$p1q1_1 == "histogram" & input$p1q1_2 == "scatterplot") {
       '<p style="color:green;"><b>Correct!</b></p> <br> <p>(Click the button again to see the plots.)</p>'
@@ -424,6 +428,7 @@ server <- function(input, output, session) {
     }
   })
   
+  # feedback for P1Q4
   output$p1q4_correct <- renderText({
     if(input$p1q4 == 4) {
       '<p style="color:green;"><b>Correct!</b></p> <br> <p>(Click the button again to see the model output.)</p>'
@@ -432,6 +437,7 @@ server <- function(input, output, session) {
     }
   })
   
+  # BMI histogram for Part 1
   output$hist_bmi <- renderPlot({
     ggplot(data = lungs) +
       geom_histogram(aes(x = bmi), bins = 30) +
@@ -441,6 +447,7 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
+  # lung function histogram for Part 1
   output$hist_fev <- renderPlot({
     ggplot(data = lungs) +
       geom_histogram(aes(x = FEVFVC02), bins = 30) +
@@ -451,6 +458,7 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
+  # scatterplot for Part 1 without separate lines
   output$scatter_eda <- renderPlot({
     ggplot(data = lungs) +
       geom_point(aes(x = bmi, y = FEVFVC02)) +
@@ -463,6 +471,7 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
+  # scatterplot for Part 1 divided by sex
   output$sexplot <- renderPlot({
     ggplot(data = lungs) +
       geom_point(aes(x = bmi, y = FEVFVC02),
@@ -476,15 +485,18 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
-  output$model <- renderPrint({
+  # model output for Part 1
+  output$model_pt1 <- renderPrint({
     summary(lm(FEVFVC02 ~ bmi + sex + bmi:sex,
                data = lungs))
   })
   
+  # beta plot for Part 1 based on slider value
   output$beta_centering <- renderPlot({
     beta_plot(input$p1q6)
   })
   
+  # histogram for Part 2
   output$hist_age <- renderPlot({
     ggplot(data = math) +
       geom_histogram(aes(x = age), bins = 8) +
@@ -494,6 +506,7 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
+  # boxplot for Part 2
   output$box_address <- renderPlot({
     ggplot(data = math) +
       geom_boxplot(aes(x = address,
@@ -505,6 +518,7 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
+  # plot for Part 2 with lines of best fit
   output$p2_scatter_alt <- output$p2_scatter <- renderPlot({
     set.seed(20020521)
     ggplot(data = math) +
@@ -526,8 +540,9 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
+  # plot for Part 2 based on beta guesses
   output$beta_guesses <- renderPlot({
-    set.seed(20020521)
+    set.seed(20020521) # to have same jitter every time
     ggplot(data = math) +
       geom_jitter(aes(x = age,
                       y = G3),
@@ -547,7 +562,8 @@ server <- function(input, output, session) {
       theme_minimal()
   })
   
-  observeEvent(input$p1q1_3, {
+  # when P1Q3 answered correctly and submitted, show these
+  observeEvent(input$p1q1_go, {
     shinyjs::show(id = "p1q1_correct")
     
     if(input$p1q1_1 == "histogram" & input$p1q1_2 == "scatterplot") {
@@ -560,18 +576,21 @@ server <- function(input, output, session) {
     }
   })
   
+  # when P1Q4 has been answered correctly, show these
   observeEvent(input$p1q4_go, {
     shinyjs::show(id = "p1q4_correct")
     
     if(input$p1q4 == 4) {
       shinyjs::hide(id = "model_placeholder")
       shinyjs::hide(id = "beta_placeholder")
-      shinyjs::show(id = "model")
+      shinyjs::show(id = "model_pt1")
       shinyjs::show(id = "beta_centering")
     }
   })
   
+  # feedback for beta guesses
   output$beta0_correct <- renderText({
+    # code to prevent error when they guess wrong and change their answer
     if(input$p2q2_beta0 == 0 | is.na(input$p2q2_beta0)) {
       ""
     } else if(input$p2q2_beta0 >= 14.5 & input$p2q2_beta0 <= 15.5) {
@@ -611,6 +630,7 @@ server <- function(input, output, session) {
     }
   })
   
+  # show model output if they've guessed the correct betas
   output$model_pt2 <- renderPrint({
     if(input$p2q2_beta0 >= 14.5 & input$p2q2_beta0 <= 15.5 &
        input$p2q2_beta1 >= 5.2 & input$p2q2_beta1 <= 6.2 &
@@ -623,6 +643,7 @@ server <- function(input, output, session) {
     }
   })
   
+  # feedback for P2Q3 (see output$p2q4_correct for comments on this code)
   output$p2q3_rural_correct <- renderText({
     if(is.null(input$p2q3_rural)) {
       ""
@@ -662,6 +683,7 @@ server <- function(input, output, session) {
     }
   })
   
+  # show feedback when answers submitted for P2Q3
   observeEvent(input$p2q3_rural_submit, {
     shinyjs::show(id = "p2q3_rural_correct")
   })
@@ -672,23 +694,27 @@ server <- function(input, output, session) {
     shinyjs::show(id = "p2q3_age0_correct")
   })
   
+  # feedback for P2Q4
   output$p2q4_correct <- renderText({
+    # code to prevent error if student gets it wrong and changes answer
     if(is.null(input$p2q4)) {
       ""
     } else if("beta_0" %in% input$p2q4 &
               "beta_1" %in% input$p2q4 &
               "beta_2" %notin% input$p2q4 &
-              "beta_3" %notin% input$p2q4) {
+              "beta_3" %notin% input$p2q4) { # if correct answer
       '<p style="color:green;"><b>Correct!</b></p>'
-    } else {
+    } else { # if incorrect answer
       '<p style="color:red;">Try again.</p>'
     }
   })
   
+  # when student submits answer for P2Q4, show feedback
   observeEvent(input$p2q4_submit, {
     shinyjs::show(id = "p2q4_correct")
   })
   
+  # server-side code to download lung dataset
   output$download_lungs <- downloadHandler(
     filename = "lhs.csv",
     content = function(file) {
@@ -696,6 +722,7 @@ server <- function(input, output, session) {
     }
   )
   
+  # server-side code to download math dataset
   output$download_math <- downloadHandler(
     filename = "student-mat.csv",
     content = function(file) {

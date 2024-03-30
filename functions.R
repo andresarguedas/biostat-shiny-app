@@ -1,14 +1,16 @@
-# building all packages from binary instead of source, for deployment
+# building all packages from binary instead of source, for app deployment
 options(repos = "https://cran.rstudio.com/", type = "binary")
 
+# libraries for this app
 library(shiny)
 library(shinyjs)
 library(tidyverse)
 library(kableExtra)
 
+# handy function
 `%notin%` <- Negate(`%in%`)
 
-# read in data
+# read in lung data
 lungs <- read_csv("lhs.csv") %>%
   # relevel the treatment var
   mutate(alphagroup = as.factor(alphagroup),
@@ -17,13 +19,16 @@ lungs <- read_csv("lhs.csv") %>%
                                   after = Inf),
          sex = AGENDER) # considering this is from the 80s, I think we would call this variable sex nowadays
 
+# read in math data
 math <- read.table("student-mat.csv",
                    sep = ";",
                    header = TRUE) %>%
   as_tibble() %>%
+  # add detail to address var
   mutate(address = case_when(address == "R" ~ "Rural",
                              address == "U" ~ "Urban"))
 
+# function to find confidence interval from lm output
 get_CI <- function(model) {
   coefs <- summary(model)$coefficients[,1]
   SEs <- summary(model)$coefficients[,2]
@@ -34,7 +39,9 @@ get_CI <- function(model) {
                   ci_high = beta + qnorm(.975) * se))
 }
 
+# function to plot coef estimates and CIs after centering by some amount `change`
 beta_plot <- function(change) {
+  # if change is 0 (at app startup)
   if(change == 0) {
     model <- lm(FEVFVC02 ~ bmi + sex + bmi * sex,
                 data = lungs)
@@ -75,6 +82,7 @@ beta_plot <- function(change) {
            y = "Coefficient estimate") +
       theme_minimal()
   } else {
+    # for all other values of c, plot original model and adjusted model
     
     dataset <- lungs %>%
       mutate(bmi_adj = bmi - change)
