@@ -375,6 +375,15 @@ ui <- navbarPage(
            )
   ),
   tabPanel("Appendix",
+           h2("Data"),
+           
+           splitLayout(cellWidths = c("25%", "25%", "50%"),
+                       downloadButton("download_lungs",
+                                      label = "Download lung data"),
+                       downloadButton("download_math",
+                                      label = "Download student data"),
+                       NULL),
+           
            h2("References"),
            
            p('Cortez, P., and Silva, A. (2008), "Using Data Mining to Predict Secondary School Student Performance," in ',
@@ -679,6 +688,20 @@ server <- function(input, output, session) {
   observeEvent(input$p2q4_submit, {
     shinyjs::show(id = "p2q4_correct")
   })
+  
+  output$download_lungs <- downloadHandler(
+    filename = "lhs.csv",
+    content = function(file) {
+      write.csv(lungs, file)
+    }
+  )
+  
+  output$download_math <- downloadHandler(
+    filename = "student-mat.csv",
+    content = function(file) {
+      write.csv(math, file)
+    }
+  )
 }
 
 # run the application
