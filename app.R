@@ -241,7 +241,7 @@ ui <- navbarPage(
              div(class = "rounded-box-solid",
                  p("In this part of the activity, we'll look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal, including several potential predictors as well as our variable of interest: their final math score at the end of the academic year."),
                  
-                 p("We want to evaluate the effect of age and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether urban/rural status modifies the effect of age on final math score."),
+                 p("We want to evaluate the effect of age and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether the effect of age on final math score varies between students living in rural vs. urban areas."),
              ),
              
              br(),
