@@ -217,7 +217,7 @@ ui <- navbarPage(
              br(),
              
              p(strong("Question 6:"),
-               "Shift the slider around and see how the plot changes. What value results in the smallest confidence intervals (CIs)? What values lead to the largest CIs? Why is this the case?"),
+               "Shift the slider around and see how the confidence intervals (CIs) change. What value results in the smallest CIs, and why? What values lead to the largest CIs, and why? Finally, why do only two of the CIs change their width?"),
              
              sliderInput("p1q6", label = NULL,
                          min = 0,
