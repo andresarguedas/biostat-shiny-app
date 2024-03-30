@@ -273,7 +273,7 @@ ui <- navbarPage(
              
              p("Here's the equation for the interaction model we want to fit:"),
              
-             withMathJax("$$Y_i = \\beta_0 + \\beta_1 X_{1i} + \\beta_2 X_{2i} + \\beta_3 X_{1i} X_{2i} + \\varepsilon_i$$"),
+             withMathJax("$$Y_i = \\beta_0 + \\beta_1 \\text{Urban}_i + \\beta_2 \\text{Age}_i + \\beta_3 \\text{Urban}_i \\times \\text{Age}_i + \\varepsilon_i$$"),
              
              p(strong("Question 2:"),
                "Using the model equation (and your intuition), find values for the intercept and coefficients to match the lines of best fit we already plotted. The plot below (on the right) will change to reflect the values you choose. (You can use decimals!)"),
