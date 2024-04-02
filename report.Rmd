@@ -1,0 +1,166 @@
+---
+title: "Building Intuition for Interaction Terms (Solutions)"
+output: pdf_document
+params:
+  p1q2: NA
+  p1q3: NA
+  p1q5: NA
+  p1q6: NA
+  p2q1: NA
+  lungs: NA
+  math: NA
+---
+
+```{r, include=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+
+**Part 1**: The Lung Health Study (LHS) was a multicenter randomized clinical trial in the 1980s and 1990s, investigating whether smoking intervention and use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the 5-year follow-up period. A total of 5,887 participants (smokers aged 35-59 years old) were recruited from 10 clinical centers in the US and Canada from 1986 to 1988. They were randomized into three groups for treatment and followed for several years. However, for this activity, we are looking exclusively at baseline measurements and demographics. The full, de-identified dataset is available for download within the app.
+
+We will examine the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) to FVC (forced vital capacity).
+
+\vspace{.5in}
+
+**Question 1**: To examine the distribution of our lung function measure, a _____ should be used. To visualize the relationship between BMI and lung function, we can use a _____.
+
+*Answer*: For lung function, we can use a histogram. For the bivariate relationship, we can use a scatterplot.
+
+<!--add EDA-->
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = params$lungs) +
+      geom_histogram(aes(x = FEVFVC02), bins = 30) +
+      labs(x = "FEV1/FVC % at baseline",
+           y = "Count",
+           title = "Distribution of lung function at baseline",
+           subtitle = "      (Higher values are better!)") +
+      theme_minimal()
+
+ggplot(data = params$lungs) +
+      geom_point(aes(x = bmi, y = FEVFVC02)) +
+      geom_smooth(aes(x = bmi, y = FEVFVC02),
+                  se = FALSE,
+                  method = "lm") +
+      labs(x = "BMI",
+           y = "FEV1/FVC % at baseline",
+           title = "Relationship between BMI and lung function") +
+      theme_minimal()
+```
+
+
+**Question 2**: What can we learn from these plots?
+
+*Your answer*: `r params$p1q2`
+
+So, now we've seen the overall relationship between BMI and lung function. But maybe there's more to the story. Does sex affect the relationship between these variables? Here's a scatterplot to help investigate this question:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = params$lungs) +
+      geom_point(aes(x = bmi, y = FEVFVC02),
+                 alpha = .3) +
+      geom_smooth(aes(x = bmi, y = FEVFVC02, color = sex),
+                  se = FALSE,
+                  method = "lm") +
+      labs(x = "BMI",
+           y = "FEV1/FVC % at baseline",
+           color = "Sex") +
+      theme_minimal()
+```
+
+**Question 3**: Describe in words how the relationship between BMI and lung function differs for men and women, based on this scatterplot.
+
+*Your answer*: `r params$p1q3`
+
+**Question 4**: Now, let's fit a linear regression model with main effects for BMI and sex, and an interaction between the two. Which of the following equations represents our regression model?
+
+*Answer*: $Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \beta_3 X_{1i} X_{2i} + \varepsilon_i$
+
+Here's the output after fitting this model in R:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+summary(lm(FEVFVC02 ~ bmi + sex + bmi:sex,
+               data = params$lungs))
+```
+
+**Question 5**: Interpret each estimated coefficient from the above output, including the model intercept.
+
+*Your answer*: `r params$p1q5`
+
+**Question 6**: Shift the slider around and see how the confidence intervals (CIs) change. What value results in the smallest CIs, and why? What values lead to the largest CIs, and why? Finally, why do only two of the CIs change their width?
+
+*Your answer*: `r params$p1q6`
+
+\newpage
+
+**Part 2**: In this part of the activity, we'll look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal, including several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The dataset is available for download within the app.
+
+We want to evaluate the effect of age and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether the effect of age on final math score varies between students living in rural vs. urban areas.
+
+First, some EDA:
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ggplot(data = params$math) +
+      geom_histogram(aes(x = age), bins = 8) +
+      labs(x = "Age",
+           y = "Count",
+           title = "Distribution of age") +
+      theme_minimal()
+
+ggplot(data = params$math) +
+      geom_boxplot(aes(x = address,
+                       y = G3),
+                   fill = "#Bbbbf6") +
+      labs(x = "Urban/rural status",
+           y = "Final math score",
+           title = "Distribution of final math score by urban/rural status") +
+      theme_minimal()
+
+set.seed(20020521)
+ggplot(data = params$math) +
+  geom_jitter(aes(x = age,
+                  y = G3),
+              width = .5,
+              height = .5) +
+  geom_smooth(aes(x = age,
+                  y = G3,
+                  color = address),
+              method = "lm",
+              se = FALSE) +
+  labs(x = "Age",
+       y = "Final math score",
+       color = "Urban/rural",
+       title = "Lines of best fit for rural and urban students") +
+  scale_color_manual(values = c("Rural" = "red3",
+                                "Urban" = "blue3")) +
+  theme_minimal()
+```
+
+\vspace{.5in}
+
+**Question 1**: What can we learn from these plots?
+
+*Your answer*: `r params$p2q1`
+
+Here's the equation for the interaction model we want to fit:
+
+$$Y_i = \beta_0 + \beta_1 \text{Urban}_i + \beta_2 \text{Age}_i + \beta_3 \text{Urban}_i \times \text{Age}_i + \varepsilon_i$$
+
+**Question 2**: Using the model equation (and your intuition), find values for the intercept and coefficients to match the lines of best fit we already plotted. The plot below (on the right) will change to reflect the values you choose. (You can use decimals!)
+
+*Answer*: This one really relies on the interactive component, so no solution is included here. You can revisit the app if you'd like!
+
+After finding the right values, here's the output after fitting this model in R:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+summary(lm(G3 ~ address + age + address:age,
+                 data = params$math))
+```
+
+**Question 3**: Now consider the interpretations of our model coefficients. Select which term(s) have interpretation(s) subject to each limitation.
+
+*Answer*: The terms $\beta_0$ and $\beta_2$ have interpretations which apply only to rural students. The terms $\beta_1$ and $\beta_3$ have interpretations which apply only to urban students. Finally, the terms $\beta_0$ and $\beta_1$ have interpretations which apply only to students of age 0.
+
+**Question 4**: Finally, suppose we centered our age predictor at the mean age of our dataset. Which coefficient estimate(s) would change because of this?
+
+*Answer*: The terms $\beta_0$ and $\beta_1$ would change as a result of centering our age predictor, but $\beta_2$ and $\beta_3$ wouldn't change, because the effect of a one-year increase in age won't change due to centering.

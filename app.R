@@ -378,6 +378,12 @@ ui <- navbarPage(
   
   # tab for appendix
   tabPanel("Appendix",
+           
+           h2("Solutions"),
+           
+           downloadButton("report",
+                          label = "Download solutions"),
+           
            h2("Data"),
            
            splitLayout(cellWidths = c("25%", "25%"),
@@ -727,6 +733,35 @@ server <- function(input, output, session) {
     filename = "student-mat.csv",
     content = function(file) {
       write.csv(math, file)
+    }
+  )
+  
+  output$report <- downloadHandler(
+    filename = "report.pdf",
+    content = function(file) {
+      # Copy the report file to a temporary directory before processing it, in
+      # case we don't have write permissions to the current working dir (which
+      # can happen when deployed).
+      tempReport <- file.path(tempdir(), "report.Rmd")
+      file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      
+      # Set up parameters to pass to Rmd document
+      params <- list(p1q2 = input$p1q2,
+                     p1q3 = input$p1q3,
+                     p1q5 = input$p1q5,
+                     p1q6 = input$p1q6_text,
+                     p2q1 = input$p2q1,
+                     lungs = lungs,
+                     math = math)
+      
+      # Knit the document, passing in the `params` list, and eval it in a
+      # child of the global environment (this isolates the code in the document
+      # from the code in this app).
+      rmarkdown::render(tempReport,
+                        output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
     }
   )
 }
