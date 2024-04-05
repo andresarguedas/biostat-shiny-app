@@ -61,7 +61,7 @@ ui <- navbarPage(
                             strong("interaction terms"),
                             "in linear models. In the process, we'll also talk about centering predictors. The activity has two parts -- start in the",
                             strong("Part 1"),
-                            "tab. As you go through the activity, discuss your thoughts and answers with your classmates nearby."))
+                            "tab. Be sure to go through the activity in order -- some questions need to be answered correctly before you can move on to the next one. As you go through the activity, discuss your thoughts and answers with your classmates nearby."))
            
         # leaving this just in case I want to revert the layout
            # fluidRow(
