@@ -20,13 +20,13 @@ lungs <- read_csv("lhs.csv") %>%
          sex = AGENDER) # considering this is from the 80s, I think we would call this variable sex nowadays
 
 # read in math data
-math <- read.table("student-mat.csv",
-                   sep = ";",
-                   header = TRUE) %>%
-  as_tibble() %>%
-  # add detail to address var
-  mutate(address = case_when(address == "R" ~ "Rural",
-                             address == "U" ~ "Urban"))
+math <- read_csv("student-mat.csv")
+
+# the following was used to adjust the address var categories and use age to create hs_yrs
+# (it's since been added to the data file, so no need to run anymore)
+  # mutate(address = case_when(address == "R" ~ "Rural",
+  #                            address == "U" ~ "Urban")),
+  #        hs_yrs = age - 14) # centering age, using 14 since min(age) = 15
 
 # function to find confidence interval from lm output
 get_CI <- function(model) {
