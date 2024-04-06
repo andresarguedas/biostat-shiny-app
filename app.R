@@ -242,7 +242,7 @@ ui <- navbarPage(
              div(class = "rounded-box-solid",
                  p("In this part of the activity, we'll look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal, including several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The dataset can be downloaded in the Appendix tab."),
                  
-                 p("We want to evaluate the effect of age and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether the effect of age on final math score varies between students living in rural vs. urban areas."),
+                 p("We want to evaluate the effect of years in high school and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether the effect of years in high school on final math score varies between students living in rural vs. urban areas."),
              ),
              
              br(),
@@ -251,7 +251,7 @@ ui <- navbarPage(
              
              br(),
              
-             plotOutput("hist_age"),
+             plotOutput("hist_hs_yrs"),
              
              br(),
              
@@ -274,7 +274,7 @@ ui <- navbarPage(
              
              p("Here's the equation for the interaction model we want to fit:"),
              
-             withMathJax("$$Y_i = \\beta_0 + \\beta_1 \\text{Urban}_i + \\beta_2 \\text{Age}_i + \\beta_3 \\text{Urban}_i \\times \\text{Age}_i + \\varepsilon_i$$"),
+             withMathJax("$$Y_i = \\beta_0 + \\beta_1 \\text{Urban}_i + \\beta_2 \\text{HS Years}_i + \\beta_3 \\text{Urban}_i \\times \\text{HS Years}_i + \\varepsilon_i$$"),
              
              p(strong("Question 2:"),
                "Using the model equation (and your intuition), find values for the intercept and coefficients to match the lines of best fit we already plotted. The plot below (on the right) will change to reflect the values you choose. (You can use decimals!)"),
@@ -336,8 +336,8 @@ ui <- navbarPage(
                                                         "$$\\beta_2$$" = "beta_2",
                                                         "$$\\beta_3$$" = "beta_3")),
                          
-                         checkboxGroupInput("p2q3_age0",
-                                            label = HTML("Interpretation is limited<br> to students of age 0:"),
+                         checkboxGroupInput("p2q3_yrs0",
+                                            label = HTML("Interpretation is limited<br> to students with 0 years in high school:"),
                                             choices = c("$$\\beta_0$$" = "beta_0",
                                                         "$$\\beta_1$$" = "beta_1",
                                                         "$$\\beta_2$$" = "beta_2",
@@ -348,17 +348,17 @@ ui <- navbarPage(
                                       label = "Submit"),
                          actionButton("p2q3_urban_submit",
                                       label = "Submit"),
-                         actionButton("p2q3_age0_submit",
+                         actionButton("p2q3_yrs0_submit",
                                       label = "Submit")),
              splitLayout(cellWidths = c("33%", "33%", "33%"),
                          shinyjs::hidden(htmlOutput("p2q3_rural_correct")),
                          shinyjs::hidden(htmlOutput("p2q3_urban_correct")),
-                         shinyjs::hidden(htmlOutput("p2q3_age0_correct"))),
+                         shinyjs::hidden(htmlOutput("p2q3_yrs0_correct"))),
              
              br(),
              
              p(strong("Question 4:"),
-               "Finally, suppose we centered our age predictor at the mean age of our dataset. Which coefficient estimate(s) would change because of this?"),
+               "Finally, suppose we centered our years in high school predictor at the mean value in our dataset. Which coefficient estimate(s) would change because of this?"),
              
              
              checkboxGroupInput("p2q4",
@@ -503,12 +503,12 @@ server <- function(input, output, session) {
   })
   
   # histogram for Part 2
-  output$hist_age <- renderPlot({
+  output$hist_hs_yrs <- renderPlot({
     ggplot(data = math) +
-      geom_histogram(aes(x = age), bins = 8) +
-      labs(x = "Age",
+      geom_histogram(aes(x = hs_yrs), bins = 8) +
+      labs(x = "Years in high school",
            y = "Count",
-           title = "Distribution of age") +
+           title = "Distribution of years in high school") +
       theme_minimal()
   })
   
@@ -528,16 +528,16 @@ server <- function(input, output, session) {
   output$p2_scatter_alt <- output$p2_scatter <- renderPlot({
     set.seed(20020521)
     ggplot(data = math) +
-      geom_jitter(aes(x = age,
+      geom_jitter(aes(x = hs_yrs,
                       y = G3),
                   width = .5,
                   height = .5) +
-      geom_smooth(aes(x = age,
+      geom_smooth(aes(x = hs_yrs,
                       y = G3,
                       color = address),
                   method = "lm",
                   se = FALSE) +
-      labs(x = "Age",
+      labs(x = "Years in high school",
            y = "Final math score",
            color = "Urban/rural",
            title = "Lines of best fit for rural and urban students") +
@@ -551,7 +551,7 @@ server <- function(input, output, session) {
   output$beta_guesses <- renderPlot({
     set.seed(20020521) # to have same jitter every time
     ggplot(data = math) +
-      geom_jitter(aes(x = age,
+      geom_jitter(aes(x = hs_yrs,
                       y = G3),
                   width = .5,
                   height = .5) +
@@ -563,7 +563,7 @@ server <- function(input, output, session) {
                   slope = input$p2q2_beta2 + input$p2q2_beta3,
                   color = "blue3",
                   linewidth = 1) +
-      labs(x = "Age",
+      labs(x = "Years in high school",
            y = "Final math score",
            title = "Lines created with your 'guesses' for coefficients") +
       scale_y_continuous(breaks = seq(0, 20, 1)) +
@@ -601,7 +601,7 @@ server <- function(input, output, session) {
     # code to prevent error when they guess wrong and change their answer
     if(input$p2q2_beta0 == 0 | is.na(input$p2q2_beta0)) {
       ""
-    } else if(input$p2q2_beta0 >= 14.5 & input$p2q2_beta0 <= 15.5) {
+    } else if(input$p2q2_beta0 >= 9.97 & input$p2q2_beta0 <= 10.97) {
       '<p style="color:green;"><b>Correct!</b></p>'
     } else {
       '<p style="color:red;">Keep trying!</p>'
@@ -611,7 +611,7 @@ server <- function(input, output, session) {
   output$beta1_correct <- renderText({
     if(input$p2q2_beta1 == 0 | is.na(input$p2q2_beta1)) {
       ""
-    } else if(input$p2q2_beta1 >= 5.2 & input$p2q2_beta1 <= 6.2) {
+    } else if(input$p2q2_beta1 >= 1.2 & input$p2q2_beta1 <= 2.2) {
       '<p style="color:green;"><b>Correct!</b></p>'
     } else {
       '<p style="color:red;">Keep trying!</p>'
@@ -640,11 +640,14 @@ server <- function(input, output, session) {
   
   # show model output if they've guessed the correct betas
   output$model_pt2 <- renderPrint({
-    if(input$p2q2_beta0 >= 14.5 & input$p2q2_beta0 <= 15.5 &
-       input$p2q2_beta1 >= 5.2 & input$p2q2_beta1 <= 6.2 &
+    if(is.na(input$p2q2_beta0) | is.na(input$p2q2_beta1) |
+       is.na(input$p2q2_beta2) | is.na(input$p2q2_beta3)) {
+      "Complete Question 2 to make this model output appear."
+    } else if(input$p2q2_beta0 >= 9.97 & input$p2q2_beta0 <= 10.97 &
+       input$p2q2_beta1 >= 1.2 & input$p2q2_beta1 <= 2.2 &
        input$p2q2_beta2 >= -.37 & input$p2q2_beta2 <= -.27 &
        input$p2q2_beta3 >= -.33 & input$p2q2_beta3 <= -.23) {
-      summary(lm(G3 ~ address + age + address:age,
+      summary(lm(G3 ~ address + hs_yrs + address:hs_yrs,
                  data = math))
     } else {
       "Complete Question 2 to make this model output appear."
@@ -678,13 +681,13 @@ server <- function(input, output, session) {
     }
   })
   
-  output$p2q3_age0_correct <- renderText({
-    if(is.null(input$p2q3_age0)) {
+  output$p2q3_yrs0_correct <- renderText({
+    if(is.null(input$p2q3_yrs0)) {
       ""
-    } else if("beta_0" %in% input$p2q3_age0 &
-              "beta_1" %in% input$p2q3_age0 &
-              "beta_2" %notin% input$p2q3_age0 &
-              "beta_3" %notin% input$p2q3_age0) {
+    } else if("beta_0" %in% input$p2q3_yrs0 &
+              "beta_1" %in% input$p2q3_yrs0 &
+              "beta_2" %notin% input$p2q3_yrs0 &
+              "beta_3" %notin% input$p2q3_yrs0) {
       '<p style="color:green;"><b>Correct!</b></p>'
     } else {
       '<p style="color:red;">Try again.</p>'
@@ -698,8 +701,8 @@ server <- function(input, output, session) {
   observeEvent(input$p2q3_urban_submit, {
     shinyjs::show(id = "p2q3_urban_correct")
   })
-  observeEvent(input$p2q3_age0_submit, {
-    shinyjs::show(id = "p2q3_age0_correct")
+  observeEvent(input$p2q3_yrs0_submit, {
+    shinyjs::show(id = "p2q3_yrs0_correct")
   })
   
   # feedback for P2Q4
