@@ -428,7 +428,7 @@ server <- function(input, output, session) {
   # feedback for P1Q1
   output$p1q1_correct <- renderText({
     if(input$p1q1_1 == "histogram" & input$p1q1_2 == "scatterplot") {
-      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(Click the button again to see the plots.)</p>'
+      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(If the plots do not appear, click Submit again.)</p>'
     } else {
       '<p style="color:red;">Not quite -- try again.</p>'
     }
@@ -437,7 +437,7 @@ server <- function(input, output, session) {
   # feedback for P1Q4
   output$p1q4_correct <- renderText({
     if(input$p1q4 == 4) {
-      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(Click the button again to see the model output.)</p>'
+      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(If the model output does not appear, click Submit again.)</p>'
     } else {
       '<p style="color:red;">Not quite -- try again.</p>'
     }
