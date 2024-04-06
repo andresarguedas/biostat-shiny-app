@@ -543,6 +543,7 @@ server <- function(input, output, session) {
            title = "Lines of best fit for rural and urban students") +
       scale_color_manual(values = c("Rural" = "red3",
                                     "Urban" = "blue3")) +
+      scale_y_continuous(breaks = seq(0, 20, 1)) +
       theme_minimal()
   })
   
@@ -565,6 +566,7 @@ server <- function(input, output, session) {
       labs(x = "Age",
            y = "Final math score",
            title = "Lines created with your 'guesses' for coefficients") +
+      scale_y_continuous(breaks = seq(0, 20, 1)) +
       theme_minimal()
   })
   
