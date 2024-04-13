@@ -97,9 +97,11 @@ ui <- navbarPage(
            
            verticalLayout(
              div(class = "rounded-box-solid", # put background inside a box
-                 p("The Lung Health Study (LHS) was a multicenter randomized clinical trial in the 1980s and 1990s, investigating whether smoking intervention and use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the 5-year follow-up period. A total of 5,887 participants (smokers aged 35-59 years old) were recruited from 10 clinical centers in the US and Canada from 1986 to 1988. They were randomized into three groups for treatment and followed for several years. However, for this activity, we are looking exclusively at baseline measurements and demographics. The full, de-identified dataset can be downloaded in the Appendix tab."),
+                 p("The Lung Health Study (LHS) was a multicenter randomized clinical trial in the 1980s and 1990s, investigating whether a smoking intervention and the use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the five-year follow-up period. A total of 5,887 participants (smokers aged 35-59 years old) were recruited from 10 clinical centers in the US and Canada and were randomized into three treatment groups (smoking intervention plus bronchodilator, smoking intervention plus placebo, or no intervention). The full, de-identified dataset can be downloaded in the",
+                 strong("Appendix"),
+                 "tab."),
                  
-                 p("We will examine the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) to FVC (forced vital capacity). Higher values of FEV1/FVC % indicate better functioning lungs."),
+                 p("In this activity, we will be looking exclusively at baseline measurements and demographics of the LHS participants. In particular, we will examine the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) to FVC (forced vital capacity). Higher values of FEV1/FVC % indicate better functioning lungs."),
              ),
              
              br(), # these are line breaks!
@@ -244,9 +246,11 @@ ui <- navbarPage(
   tabPanel("Part 2",
            verticalLayout(
              div(class = "rounded-box-solid",
-                 p("In this part of the activity, we'll look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal, including several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The dataset can be downloaded in the Appendix tab."),
+                 p("In this part of the activity, we will look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal from the 2005-2006 school year. The data were collected by reviewing student records and presenting students with questionnaires. The dataset includes several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The dataset can be downloaded in the",
+                 strong("Appendix"),
+                 "tab."),
                  
-                 p("We want to evaluate the effect of years in high school and urban/rural status on final math score. (Here, urban/rural refers to where a student lives, not where their school is located.) We also want to determine whether the effect of years in high school on final math score varies between students living in rural vs. urban areas."),
+                 p("We want to evaluate the effect of years in high school on final math score varies between students living in rural vs. urban areas. (Here, urban/rural refers to where a student lives, not where their school is located.)"),
              ),
              
              br(),
