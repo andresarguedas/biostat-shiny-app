@@ -47,6 +47,10 @@ ui <- navbarPage(
           align-items: center;
     }
     
+    body {
+          padding-top: 70px;
+    }
+    
     </style>
     "
     )
@@ -95,13 +99,13 @@ ui <- navbarPage(
              div(class = "rounded-box-solid", # put background inside a box
                  p("The Lung Health Study (LHS) was a multicenter randomized clinical trial in the 1980s and 1990s, investigating whether smoking intervention and use of an inhaled bronchodilator (Atrovent) would decrease the rate of decline in lung function over the 5-year follow-up period. A total of 5,887 participants (smokers aged 35-59 years old) were recruited from 10 clinical centers in the US and Canada from 1986 to 1988. They were randomized into three groups for treatment and followed for several years. However, for this activity, we are looking exclusively at baseline measurements and demographics. The full, de-identified dataset can be downloaded in the Appendix tab."),
                  
-                 p("We will examine the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) to FVC (forced vital capacity)."),
+                 p("We will examine the relationship between body mass index (BMI) and lung function, as measured by the ratio of FEV1 (forced expiratory volume in 1 second) to FVC (forced vital capacity). Higher values of FEV1/FVC % indicate better functioning lungs."),
              ),
              
              br(), # these are line breaks!
              
              p(strong("Question 1:"),
-               "To examine the distribution of our lung function measure, a _____ should be used. To visualize the relationship between BMI and lung function, we can use a _____."),
+               "To examine the distribution of our lung function measure (FEV1/FVC %), a _____ should be used. To visualize the relationship between BMI and lung function, we can use a _____."),
              
              # putting multiple elements in the same row
              # NOTE: shinyjs::hidden() makes an element hidden until a specific action happens
@@ -126,7 +130,7 @@ ui <- navbarPage(
              # hidden elements don't appear till a question is answered
              shinyjs::hidden(plotOutput("hist_bmi")),
              br(),
-             shinyjs::hidden(plotOutput("hist_fev")),
+             shinyjs::hidden(plotOutput("box_fev")),
              br(),
              shinyjs::hidden(plotOutput("scatter_eda")),
              br(),
@@ -150,7 +154,7 @@ ui <- navbarPage(
              br(),
              
              p(strong("Question 3:"),
-               "Describe in words how the relationship between BMI and lung function differs for men and women, based on this scatterplot."),
+               "Describe in words how the relationship between BMI and lung function differs for males and females, based on this scatterplot."),
              
              textAreaInput("p1q3", label = NULL,
                            placeholder = "Write your insights...",
@@ -418,13 +422,27 @@ ui <- navbarPage(
            
            h2("Acknowledgements"),
            
-           p("This will be the last thing I add to the app!"))
+           p("This will be the last thing I add to the app!")),
+  
+  id = "navbar",
+  position = c("fixed-top") # this fixes the header to the top of the page when scrolling
 )
 
 
  
 # define server
 server <- function(input, output, session) {
+  
+  # JavaScript function to scroll to the top of the page
+  scrollToTop <- function() {
+    runjs("window.scrollTo(0,0);")
+  }
+  
+  # function to bind tab switch event
+  observeEvent(input$navbar, {
+    scrollToTop() # scroll to the top when a tab is switched
+  })
+  
   # feedback for P1Q1
   output$p1q1_correct <- renderText({
     if(input$p1q1_1 == "histogram" & input$p1q1_2 == "scatterplot") {
@@ -454,14 +472,19 @@ server <- function(input, output, session) {
   })
   
   # lung function histogram for Part 1
-  output$hist_fev <- renderPlot({
+  output$box_fev <- renderPlot({
     ggplot(data = lungs) +
-      geom_histogram(aes(x = FEVFVC02), bins = 30) +
-      labs(x = "FEV1/FVC % at baseline",
-           y = "Count",
-           title = "Distribution of lung function at baseline",
+      geom_boxplot(aes(x = FEVFVC02,
+                       y = sex,
+                       fill = sex)) +
+      scale_fill_manual(values = c("M" = "#D55E00",
+                                   "F" = "#0072B2")) +
+      labs(y = "Sex",
+           x = "FEV1/FVC % at baseline",
+           title = "Distribution of lung function at baseline by sex",
            subtitle = "      (Higher values are better!)") +
-      theme_minimal()
+      theme_minimal() +
+      theme(legend.position = "none")
   })
   
   # scatterplot for Part 1 without separate lines
@@ -473,7 +496,7 @@ server <- function(input, output, session) {
                   method = "lm") +
       labs(x = "BMI",
            y = "FEV1/FVC % at baseline",
-           title = "Relationship between BMI and lung function") +
+           title = "Line of best fit between BMI and lung function") +
       theme_minimal()
   })
   
@@ -485,9 +508,12 @@ server <- function(input, output, session) {
       geom_smooth(aes(x = bmi, y = FEVFVC02, color = sex),
                   se = FALSE,
                   method = "lm") +
+      scale_color_manual(values = c("M" = "#D55E00",
+                                    "F" = "#0072B2")) +
       labs(x = "BMI",
            y = "FEV1/FVC % at baseline",
-           color = "Sex") +
+           color = "Sex",
+           title = "Lines of best fit for males and females") +
       theme_minimal()
   })
   
@@ -515,13 +541,16 @@ server <- function(input, output, session) {
   # boxplot for Part 2
   output$box_address <- renderPlot({
     ggplot(data = math) +
-      geom_boxplot(aes(x = address,
-                       y = G3),
-                   fill = "#Bbbbf6") +
-      labs(x = "Urban/rural status",
-           y = "Final math score",
+      geom_boxplot(aes(y = address,
+                       x = G3,
+                       fill = address)) +
+      scale_fill_manual(values = c("Rural" = "#D55E00",
+                                   "Urban" = "#0072B2")) +
+      labs(y = "Urban/rural status",
+           x = "Final math score",
            title = "Distribution of final math score by urban/rural status") +
-      theme_minimal()
+      theme_minimal() +
+      theme(legend.position = "none")
   })
   
   # plot for Part 2 with lines of best fit
@@ -541,8 +570,8 @@ server <- function(input, output, session) {
            y = "Final math score",
            color = "Urban/rural",
            title = "Lines of best fit for rural and urban students") +
-      scale_color_manual(values = c("Rural" = "red3",
-                                    "Urban" = "blue3")) +
+      scale_color_manual(values = c("Rural" = "#D55E00",
+                                    "Urban" = "#0072B2")) +
       scale_y_continuous(breaks = seq(0, 20, 1)) +
       theme_minimal()
   })
@@ -557,11 +586,11 @@ server <- function(input, output, session) {
                   height = .5) +
       geom_abline(intercept = input$p2q2_beta0,
                   slope = input$p2q2_beta2,
-                  color = "red3",
+                  color = "#D55E00",
                   linewidth = 1) + # match line width to geom_smooth() width
       geom_abline(intercept = input$p2q2_beta0 + input$p2q2_beta1,
                   slope = input$p2q2_beta2 + input$p2q2_beta3,
-                  color = "blue3",
+                  color = "#0072B2",
                   linewidth = 1) +
       labs(x = "Years in high school",
            y = "Final math score",
@@ -578,7 +607,7 @@ server <- function(input, output, session) {
       shinyjs::hide(id = "eda_placeholder")
       shinyjs::hide(id = "sex_placeholder")
       shinyjs::show(id = "hist_bmi")
-      shinyjs::show(id = "hist_fev")
+      shinyjs::show(id = "box_fev")
       shinyjs::show(id = "scatter_eda")
       shinyjs::show(id = "sexplot")
     }
