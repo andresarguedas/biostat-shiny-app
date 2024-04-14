@@ -107,7 +107,7 @@ ui <- navbarPage(
              br(), # these are line breaks!
              
              p(strong("Question 1:"),
-               "To examine the distribution of our lung function measure (FEV1/FVC %), a _____ should be used. To visualize the relationship between BMI and lung function, we can use a _____."),
+               "To examine the distribution of the lung function measure (FEV1/FVC %), a _____ should be used. To visualize the relationship between BMI and lung function, a _____ should be used."),
              
              # putting multiple elements in the same row
              # NOTE: shinyjs::hidden() makes an element hidden until a specific action happens
@@ -120,7 +120,7 @@ ui <- navbarPage(
                                       choices = list("histogram",
                                                      "scatterplot",
                                                      "bar chart")),
-                         actionButton("p1q1_go", label = "Submit"),
+                         actionButton("p1q1_submit", label = "Submit"),
                          shinyjs::hidden(htmlOutput("p1q1_correct"))),
              
              br(),
@@ -146,7 +146,7 @@ ui <- navbarPage(
              
              br(),
              
-             p("So, now we've seen the overall relationship between BMI and lung function. But maybe there's more to the story. Does sex affect the relationship between these variables? Here's a scatterplot to help investigate this question:"),
+             p("So, now we've examined the overall relationship between BMI and lung function. But maybe there's more to the story. In particular, does biological sex affect the relationship between these variables? Here's the scatterplot again, but with separate lines of best fit for males and females, to help investigate this question:"),
              
              p(id = "sex_placeholder",
                em("This plot will appear after you answer Question 1.")),
@@ -156,7 +156,7 @@ ui <- navbarPage(
              br(),
              
              p(strong("Question 3:"),
-               "Describe in words how the relationship between BMI and lung function differs for males and females, based on this scatterplot."),
+               "Based on this scatterplot, describe in words how the relationship between BMI and lung function differs for males and females."),
              
              textAreaInput("p1q3", label = NULL,
                            placeholder = "Write your insights...",
@@ -164,8 +164,12 @@ ui <- navbarPage(
              
              br(),
              
+             p("Now, let's fit a linear regression model with main effects for BMI and sex, and an interaction between the two."),
+             
+             br(),
+             
              p(strong("Question 4:"),
-               "Now, let's fit a linear regression model with main effects for BMI and sex, and an interaction between the two. Which of the following equations represents our regression model?"),
+               "Which of the following equations represents this interaction model?"),
              
              # a bit complicated because it uses TeX...
              # (there might be an easier way using withMathJax(), but I already did this)
@@ -190,7 +194,7 @@ ui <- navbarPage(
              ),
              
              splitLayout(cellWidths = c("20%", "40%"), # turns out these don't need to sum to 100!
-                         actionButton("p1q4_go",
+                         actionButton("p1q4_submit",
                                       label = "Submit"),
                          shinyjs::hidden(htmlOutput("p1q4_correct"))),
              
@@ -215,30 +219,86 @@ ui <- navbarPage(
              
              br(),
              
-             p("Notice that the interpretation of the intercept is meaningless right now, since a BMI of 0 is impossible! We can fix that by centering our data. To do this, we subtract some amount, c, from each subject's measurement of BMI."),
+             p(strong("Question 6:"),
+               "Which of these model terms have interpretations that are",
+               em("not"),
+               "meaningful for this data?"),
              
-             p("The plot below shows estimates for the coefficients in the non-centered model, with a 95% confidence interval for each. The",
-               strong("slider"),
-               "lets you select the value of c; in other words, the slider controls how much is subtracted from BMI."),
+             checkboxGroupInput("p1q6",
+                                label = NULL,
+                                choices = c("$$\\beta_0$$" = "beta_0",
+                                            "$$\\beta_1$$" = "beta_1",
+                                            "$$\\beta_2$$" = "beta_2",
+                                            "$$\\beta_3$$" = "beta_3")),
+             actionButton("p1q6_submit",
+                          label = "Submit"),
+             
+             shinyjs::hidden(htmlOutput("p1q6_correct")),
              
              br(),
              
-             p(strong("Question 6:"),
-               "Shift the slider around and see how the confidence intervals (CIs) change. What value results in the smallest CIs, and why? What values lead to the largest CIs, and why? Finally, why do only two of the CIs change their width?"),
+             p(id = "centering_hider",
+               em("The final questions will appear after you answer Question 6 correctly.")),
              
-             sliderInput("p1q6", label = NULL,
-                         min = 0,
-                         max = 40,
-                         value = 0),
+             shinyjs::hidden(p(
+               id = "centering_hidden1",
+               "That's right -- the interpretations of two of these model terms are meaningless right now, since a BMI of 0 is impossible! We can fix that by centering our data. To do this, we subtract some amount, c, from each subject's measurement of BMI.")
+             ),
              
-             p(id = "beta_placeholder",
-               em("This plot will appear after you answer Question 4.")),
+             shinyjs::hidden(p(
+               id = "centering_hidden2",
+               "The plot below shows estimates for the coefficients in the non-centered model, with a 95% confidence interval for each. The",
+               strong("slider"),
+               "lets you select the value of c; in other words, the slider controls how much is subtracted from BMI.")
+             ),
+             
+             shinyjs::hidden(p(
+               id = "centering_hidden3",
+               "Shift the slider around to several different values and see how the estimates and confidence intervals (CIs) change. When you change the slider value, for each term you'll see the original estimate (the point) and 95% CI (the bars), next to a new estimate and 95% CI after centering by the slider value. Then, answer the questions below the plot."
+             )),
+             
+             br(),
+             
+             shinyjs::hidden(sliderInput("p1_slider", label = NULL,
+                                         min = 0,
+                                         max = 40,
+                                         value = 0)
+             ),
+             
              
              shinyjs::hidden(plotOutput("beta_centering")),
              
-             textAreaInput("p1q6_text", label = NULL,
-                           placeholder = "Write your insights...",
-                           width = "55%")
+             br(),
+             
+             shinyjs::hidden(p(
+               id = "centering_hidden4",
+               strong("Question 7:"),
+               "Why do the estimates and CI widths change for only two of the terms?")
+             ),
+             
+             shinyjs::hidden(textAreaInput("p1q7", label = NULL,
+                                           placeholder = "Write your insights...",
+                                           width = "55%")
+             ),
+             
+             shinyjs::hidden(p(
+               id = "centering_hidden5",
+               strong("Question 8:"),
+               "What value results in the smallest CIs, and why? What values lead to the largest CIs, and why?")
+             ),
+             
+             shinyjs::hidden(textAreaInput("p1q8", label = NULL,
+                                           placeholder = "Write your insights...",
+                                           width = "55%")
+             ),
+             
+             br(),
+             
+             shinyjs::hidden(p(
+               id = "p1_end",
+               "After completing these question, use the header of this page to move on to",
+               strong("Part 2."))
+             )
            )
   ),
   
@@ -246,7 +306,7 @@ ui <- navbarPage(
   tabPanel("Part 2",
            verticalLayout(
              div(class = "rounded-box-solid",
-                 p("In this part of the activity, we will look at data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal from the 2005-2006 school year. The data were collected by reviewing student records and presenting students with questionnaires. The dataset includes several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The dataset can be downloaded in the",
+                 p("In this part of the activity, we will look at academic data from schools in Portugal. We have a dataset of 395 students at two different secondary schools in Portugal from the 2005-2006 school year. The data were collected by reviewing student records and presenting students with questionnaires, with the intent of showing how data mining can predict academic performance. The dataset includes several potential predictors as well as our variable of interest: their final math score at the end of the academic year. The full, de-identified dataset can be downloaded in the",
                  strong("Appendix"),
                  "tab."),
                  
@@ -255,7 +315,7 @@ ui <- navbarPage(
              
              br(),
              
-             p("First, some EDA:"),
+             p("Before fitting the model, let's do some EDA to explore the variables of interest:"),
              
              br(),
              
@@ -529,7 +589,7 @@ server <- function(input, output, session) {
   
   # beta plot for Part 1 based on slider value
   output$beta_centering <- renderPlot({
-    beta_plot(input$p1q6)
+    beta_plot(input$p1_slider)
   })
   
   # histogram for Part 2
@@ -604,7 +664,7 @@ server <- function(input, output, session) {
   })
   
   # when P1Q3 answered correctly and submitted, show these
-  observeEvent(input$p1q1_go, {
+  observeEvent(input$p1q1_submit, {
     shinyjs::show(id = "p1q1_correct")
     
     if(input$p1q1_1 == "histogram" & input$p1q1_2 == "scatterplot") {
@@ -618,7 +678,7 @@ server <- function(input, output, session) {
   })
   
   # when P1Q4 has been answered correctly, show these
-  observeEvent(input$p1q4_go, {
+  observeEvent(input$p1q4_submit, {
     shinyjs::show(id = "p1q4_correct")
     
     if(input$p1q4 == 4) {
@@ -626,6 +686,45 @@ server <- function(input, output, session) {
       shinyjs::hide(id = "beta_placeholder")
       shinyjs::show(id = "model_pt1")
       shinyjs::show(id = "beta_centering")
+    }
+  })
+  
+  # feedback for P1Q6
+  output$p1q6_correct <- renderText({
+    # code to prevent error if student gets it wrong and changes answer
+    if(is.null(input$p1q6)) {
+      ""
+    } else if("beta_0" %in% input$p1q6 &
+              "beta_1" %notin% input$p1q6 &
+              "beta_2" %in% input$p1q6 &
+              "beta_3" %notin% input$p1q6) { # if correct answer
+      '<p style="color:green;"><b>Correct!</b></p> <br> <p>(If the rest of the page does not appear, click Submit again.)</p>'
+    } else { # if incorrect answer
+      '<p style="color:red;">Try again.</p>'
+    }
+  })
+  
+  # when student submits answer for P1Q6, show feedback
+  observeEvent(input$p1q6_submit, {
+    shinyjs::show(id = "p1q6_correct")
+    
+    if(is.null(input$p1q6)) {
+      ""
+    } else if("beta_0" %in% input$p1q6 &
+              "beta_1" %notin% input$p1q6 &
+              "beta_2" %in% input$p1q6 &
+              "beta_3" %notin% input$p1q6) { # if correct answer
+      shinyjs::hide("centering_hider")
+      shinyjs::show(id = "centering_hidden1")
+      shinyjs::show(id = "centering_hidden2")
+      shinyjs::show(id = "centering_hidden3")
+      shinyjs::show(id = "p1_slider")
+      shinyjs::show(id = "beta_centering")
+      shinyjs::show(id = "centering_hidden4")
+      shinyjs::show(id = "p1q7")
+      shinyjs::show(id = "centering_hidden5")
+      shinyjs::show(id = "p1q8")
+      shinyjs::show(id = "p1_end")
     }
   })
   
@@ -787,7 +886,8 @@ server <- function(input, output, session) {
       params <- list(p1q2 = input$p1q2,
                      p1q3 = input$p1q3,
                      p1q5 = input$p1q5,
-                     p1q6 = input$p1q6_text,
+                     p1q7 = input$p1q7,
+                     p1q8 = input$p1q8,
                      p2q1 = input$p2q1,
                      lungs = lungs,
                      math = math)
