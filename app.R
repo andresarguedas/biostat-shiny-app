@@ -65,7 +65,11 @@ ui <- navbarPage(
                             strong("interaction terms"),
                             "in linear models. In the process, we'll also talk about centering predictors. The activity has two parts. Click on the",
                             strong("Part 1"),
-                            "tab above to get started. Once you complete Part 1, you'll move on to Part 2. Be sure to go through the activity in order -- some questions need to be answered correctly before you can move on to the next one. This activity should be completed in small groups, so discuss your answers with your classmates nearby."))
+                            "tab above to get started. Once you complete Part 1, you'll move on to Part 2. Be sure to go through the activity in order -- some questions need to be answered correctly before you can move on to the next one. This activity should be completed in small groups, so discuss your answers with your classmates nearby."),
+                          
+                          p("Once you complete the activity, you can move on to the",
+                            strong("Appendix"),
+                            "tab. There, you can download a PDF containing the questions and the answers you wrote throughout the activity. You can also download the datasets if you wish."))
            
         # leaving this just in case I want to revert the layout
            # fluidRow(
@@ -698,7 +702,6 @@ server <- function(input, output, session) {
       shinyjs::hide(id = "model_placeholder")
       shinyjs::hide(id = "beta_placeholder")
       shinyjs::show(id = "model_pt1")
-      shinyjs::show(id = "beta_centering")
     }
   })
   
