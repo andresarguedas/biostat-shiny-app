@@ -242,7 +242,7 @@ ui <- navbarPage(
              
              shinyjs::hidden(p(
                id = "centering_hidden1",
-               "That's right -- the interpretations of two of these model terms are meaningless right now, since a BMI of 0 is impossible! We can fix that by centering our data. To do this, we subtract some amount, c, from each subject's measurement of BMI.")
+               "That's right -- the interpretations of two of these model terms are meaningless right now, since a BMI of 0 is impossible! We can fix that by centering our BMI predictor. To do this, we subtract some amount, c, from each subject's measurement of BMI.")
              ),
              
              shinyjs::hidden(p(
@@ -288,6 +288,19 @@ ui <- navbarPage(
              ),
              
              shinyjs::hidden(textAreaInput("p1q8", label = NULL,
+                                           placeholder = "Write your insights...",
+                                           width = "55%")
+             ),
+             
+             br(),
+             
+             shinyjs::hidden(p(
+               id = "centering_hidden6",
+               strong("Question 9:"),
+               "Suppose we set c at the value of 20. Use the slider to find the estimated intercept and main effect for sex, and interpret the two of them in context.")
+             ),
+             
+             shinyjs::hidden(textAreaInput("p1q9", label = NULL,
                                            placeholder = "Write your insights...",
                                            width = "55%")
              ),
@@ -345,7 +358,7 @@ ui <- navbarPage(
              withMathJax("$$Y_i = \\beta_0 + \\beta_1 \\text{Urban}_i + \\beta_2 \\text{HS Years}_i + \\beta_3 \\text{Urban}_i \\times \\text{HS Years}_i + \\varepsilon_i$$"),
              
              p(strong("Question 2:"),
-               "Using the model equation (and your intuition), find values for the intercept and coefficients to match the lines of best fit we already plotted. The plot below (on the right) will change to reflect the values you choose. (You can use decimals!)"),
+               "Using the model equation, find values for the regression coefficients to match the lines of best fit that were already plotted. To help you with this process, two scatterplots are presented below. The plot on the left shows the lines of best fit (as shown earlier), and the plot on the right shows the lines based on the values you choose. Your goal is to get the plot on the right to match the plot on the left. (You can use decimals!)"),
              
              splitLayout(cellWidths = rep("25%", 4),
                          numericInput("p2q2_beta0", label = withMathJax("$$\\beta_0$$"),
@@ -724,6 +737,8 @@ server <- function(input, output, session) {
       shinyjs::show(id = "p1q7")
       shinyjs::show(id = "centering_hidden5")
       shinyjs::show(id = "p1q8")
+      shinyjs::show(id = "centering_hidden6")
+      shinyjs::show(id = "p1q9")
       shinyjs::show(id = "p1_end")
     }
   })
@@ -888,6 +903,7 @@ server <- function(input, output, session) {
                      p1q5 = input$p1q5,
                      p1q7 = input$p1q7,
                      p1q8 = input$p1q8,
+                     p1q9 = input$p1q9,
                      p2q1 = input$p2q1,
                      lungs = lungs,
                      math = math)
