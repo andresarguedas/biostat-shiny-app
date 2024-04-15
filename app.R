@@ -499,7 +499,7 @@ ui <- navbarPage(
            
            h2("Acknowledgements"),
            
-           p("This will be the last thing I add to the app!")),
+           p("Thanks to Dr. Ashley Petersen for her advising throughout the development of this activity. Thanks also to Drs. Laura Le, Chelsey Legacy, and Ann Brearley for their assistance in the development process. Lastly, thanks to Emma Billmyer and Julia Kancans for their suggestions on data sources and repositories. This activity was created by David McGowan, with the help of all of these people.")),
   
   id = "navbar",
   position = c("fixed-top") # this fixes the header to the top of the page when scrolling
