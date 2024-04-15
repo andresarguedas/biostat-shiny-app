@@ -69,7 +69,8 @@ beta_plot <- function(change) {
     plot <- df %>%
       ggplot() +
       geom_point(aes(x = "",
-                     y = beta)) +
+                     y = beta),
+                 shape = 15) +
       geom_errorbar(aes(x = "",
                         ymin = ci_low,
                         ymax = ci_high)) +
@@ -114,7 +115,8 @@ beta_plot <- function(change) {
     
     # dummy df to artifically set the limits,
     # since each plot in the facet_wrap() needs different limits
-    dummy_df <- tibble(model = c("Original", "Adjusted", rep(NA, 6)),
+    dummy_df <- tibble(model = rep(c("Original", "Adjusted"),
+                                   4),
                        name = c(rep("Intercept", 2),
                                 rep("BMI", 2),
                                 rep("Sex (M)", 2),
