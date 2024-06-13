@@ -11,7 +11,7 @@ library(kableExtra)
 `%notin%` <- Negate(`%in%`)
 
 # read in lung data
-lungs <- read_csv("lhs.csv") %>%
+lungs <- read_csv(here::here("data/lhs.csv")) %>%
   # relevel the treatment var
   mutate(alphagroup = as.factor(alphagroup),
          alphagroup = fct_relevel(alphagroup,
@@ -20,7 +20,7 @@ lungs <- read_csv("lhs.csv") %>%
          sex = AGENDER) # considering this is from the 80s, I think we would call this variable sex nowadays
 
 # read in math data
-math <- read_csv("student-mat.csv")
+math <- read_csv(here::here("data/student-mat.csv"))
 
 # the following was used to adjust the address var categories and use age to create hs_yrs
 # (it's since been added to the data file, so no need to run anymore)

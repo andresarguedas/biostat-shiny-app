@@ -2,6 +2,8 @@
 title: "Building Intuition for Interaction Terms (Solutions)"
 output: pdf_document
 params:
+  p1q1_1: NA
+  p1q1_2: NA
   p1q2: NA
   p1q3: NA
   p1q5: NA
@@ -23,31 +25,7 @@ In this activity, we will be looking exclusively at baseline measurements and de
 
 \vspace{.5in}
 
-**Question 1**: To examine the distribution of the lung function measure (FEV1/FVC %), a _____ should be used. To visualize the relationship between BMI and lung function, a _____ should be used.
-
-*Answer*: For lung function, we can use a histogram. For the bivariate relationship, we can use a scatterplot.
-
-<!--add EDA-->
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = params$lungs) +
-  geom_histogram(aes(x = bmi), bins = 30) +
-  labs(x = "BMI",
-       y = "Count",
-       title = "Distribution of BMI") +
-  theme_minimal()
-
-ggplot(data = params$lungs) +
-  geom_point(aes(x = bmi, y = FEVFVC02)) +
-  geom_smooth(aes(x = bmi, y = FEVFVC02),
-              se = FALSE,
-              method = "lm") +
-  labs(x = "BMI",
-       y = "FEV1/FVC % at baseline",
-       title = "Line of best fit between BMI and lung function") +
-  theme_minimal()
-```
-
+**Question 1**: To examine the distribution of the lung function measure (FEV1/FVC %), a `r params$p1q1_1` should be used. To visualize the relationship between BMI and lung function, a `r params$p1q1_2` should be used.
 
 **Question 2**: What can we learn from these plots?
 
@@ -77,8 +55,6 @@ ggplot(data = params$lungs) +
 
 **Question 4**: Now, let's fit a linear regression model with main effects for BMI and sex, and an interaction between the two. Which of the following equations represents this interaction model?
 
-*Answer*: $Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \beta_3 X_{1i} X_{2i} + \varepsilon_i$
-
 Here's the output after fitting this model in R:
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -90,37 +66,7 @@ summary(lm(FEVFVC02 ~ bmi + sex + bmi:sex,
 
 *Your answer*: `r params$p1q5`
 
-*Example answer*: The intercept $\beta_0$ means that the average lung function measurement for women with a BMI of 0 is 63.87 percentage points. For $\beta_1$, the average lung function for measurement for men increases by .067 percentage points for a one-unit increase in BMI. The $\beta_2$ term means the average lung function measurement for men is 4.06 percentage points higher than women when BMI is held at 0. Finally, the $\beta_3$ term means that the average lung function measurement for men increases by $(.067 + .115) = .182$ percentage points for a one-unit increase in BMI.
-
 **Question 6**: Which of the model terms have interpretations that are *not* meaningful for this data?
-
-*Answer*: The terms $\beta_0$ and $\beta_2$ are not meaningful, because their interpretations are specific to people with a BMI of 0, which is impossible.
-
-**Question 7**: Why do the estimates and CI widths change for only two of the terms when we center the BMI predictor?
-
-*Your answer*: `r params$p1q7`
-
-*Example answer*: The BMI main effect and the BMI:sex interaction represent the effect of a one-unit increase in BMI (for specific populations). The effect of a one-unit change doesn't change if we subtract the same amount from everybody's BMI value, as we do when centering the predictor.
-
-**Question 8**: What value results in the smallest CIs, and why? What values lead to the largest CIs, and why?
-
-*Your answer*: `r params$p1q8`
-
-*Example answer*: A slider value of 25 or 26 results in the smallest CIs. This is because the mean BMI value in our dataset is `r round(mean(params$lungs$bmi, na.rm = TRUE), 2)`, and centering at the mean minimizes standard errors. A value of 0 (so, not centering the predictor) or 40 maximizes the CI width. This is because our dataset doesn't include much information about people with BMIs of 0 or 40, and so the standard errors become larger.
-
-**Question 9**: Suppose we center BMI at 20. Use the slider to find the estimated intercept and main effect for sex, and interpret the two of them in context.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-params$lungs %>%
-  mutate(centered = bmi - 20) %>%
-  lm(FEVFVC02 ~ centered + sex + centered:sex,
-     data = .) %>%
-  summary()
-```
-
-*Your answer*: `r params$p1q9`
-
-*Example answer*: Our new intercept $\beta_0$ means that the average lung function measurement for women with BMI of 20 is 65.21 percentage points. For the new value of $\beta_2$, the average lung function measurement for men is 1.75 percentage points lower than for women, holding BMI at 20.
 
 \newpage
 
@@ -132,7 +78,8 @@ First, some EDA:
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 ggplot(data = params$math) +
-  geom_histogram(aes(x = hs_yrs), bins = 8) +
+  geom_histogram(aes(x = hs_yrs), bins = 8,
+                     fill = "grey", col = "black") +
   labs(x = "Years in high school",
        y = "Count",
        title = "Distribution of years in high school") +
@@ -183,8 +130,6 @@ $$Y_i = \beta_0 + \beta_1 \text{Urban}_i + \beta_2 \text{HS Years}_i + \beta_3 \
 
 **Question 2**: Using the model equation, find values for the regression coefficients to match the lines of best fit that were already plotted. To help you with this process, two scatterplots are presented below. The plot on the left shows the lines of best fit (as shown earlier), and the plot on the right shows the lines based on the values you choose. Your goal is to get the plot on the right to match the plot on the left. (You can use decimals!)
 
-*Answer*: This one really relies on the interactive component, so no solution is included here. You can [revisit the app](https://mcgow241.shinyapps.io/Thesis/) if you'd like!
-
 After finding the right values, here's the output after fitting this model in R:
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -193,9 +138,3 @@ summary(lm(G3 ~ address + hs_yrs + address:hs_yrs,
 ```
 
 **Question 3**: Now consider the interpretations of our model coefficients. Select which term(s) have interpretation(s) subject to each limitation.
-
-*Answer*: The terms $\beta_0$ and $\beta_2$ have interpretations which apply only to rural students. The terms $\beta_1$ and $\beta_3$ have interpretations which apply only to urban students. Finally, the terms $\beta_0$ and $\beta_1$ have interpretations which apply only to students with 0 years in high school.
-
-**Question 4**: Finally, suppose we centered our years in high school predictor at the mean value in our dataset. Which coefficient estimate(s) would change because of this?
-
-*Answer*: The terms $\beta_0$ and $\beta_1$ would change as a result of centering our years in high school predictor, but $\beta_2$ and $\beta_3$ wouldn't change, because the effect of a one-year increase in age won't change due to centering.

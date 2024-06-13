@@ -1,4 +1,4 @@
-source("functions.R")
+source(here::here("R/functions.R"))
 
 # define UI
 ui <- navbarPage(
@@ -241,73 +241,73 @@ ui <- navbarPage(
              
              br(),
              
-             p(id = "centering_hider",
-               em("The final questions will appear after you answer Question 6 correctly.")),
+             #p(id = "centering_hider",
+             #  em("The final questions will appear after you answer Question 6 correctly.")),
              
              shinyjs::hidden(p(
                id = "centering_hidden1",
                "That's right -- the interpretations of two of these model terms are meaningless right now, since a BMI of 0 is impossible! We can fix that by centering our BMI predictor. To do this, we subtract some amount, c, from each subject's measurement of BMI.")
              ),
              
-             shinyjs::hidden(p(
-               id = "centering_hidden2",
-               "The plot below shows estimates for the coefficients in the non-centered model, with a 95% confidence interval for each. The",
-               strong("slider"),
-               "lets you select the value of c; in other words, the slider controls how much is subtracted from BMI.")
-             ),
-             
-             shinyjs::hidden(p(
-               id = "centering_hidden3",
-               "Shift the slider around to several different values and see how the estimates and confidence intervals (CIs) change. When you change the slider value, for each term you'll see the original estimate (the point) and 95% CI (the bars), next to a new estimate and 95% CI after centering by the slider value. Then, answer the questions below the plot."
-             )),
-             
-             br(),
-             
-             shinyjs::hidden(sliderInput("p1_slider", label = NULL,
-                                         min = 0,
-                                         max = 40,
-                                         value = 0)
-             ),
-             
-             
-             shinyjs::hidden(plotOutput("beta_centering")),
-             
-             br(),
-             
-             shinyjs::hidden(p(
-               id = "centering_hidden4",
-               strong("Question 7:"),
-               "Why do the estimates and CI widths change for only two of the terms?")
-             ),
-             
-             shinyjs::hidden(textAreaInput("p1q7", label = NULL,
-                                           placeholder = "Write your insights...",
-                                           width = "55%")
-             ),
-             
-             shinyjs::hidden(p(
-               id = "centering_hidden5",
-               strong("Question 8:"),
-               "What value results in the smallest CIs, and why? What values lead to the largest CIs, and why?")
-             ),
-             
-             shinyjs::hidden(textAreaInput("p1q8", label = NULL,
-                                           placeholder = "Write your insights...",
-                                           width = "55%")
-             ),
-             
-             br(),
-             
-             shinyjs::hidden(p(
-               id = "centering_hidden6",
-               strong("Question 9:"),
-               "Suppose we set c at the value of 20. Use the slider to find the estimated intercept and main effect for sex, and interpret the two of them in context.")
-             ),
-             
-             shinyjs::hidden(textAreaInput("p1q9", label = NULL,
-                                           placeholder = "Write your insights...",
-                                           width = "55%")
-             ),
+             #shinyjs::hidden(p(
+             #  id = "centering_hidden2",
+             #  "The plot below shows estimates for the coefficients in the non-centered model, with a 95% confidence interval for each. The",
+             #  strong("slider"),
+             #  "lets you select the value of c; in other words, the slider controls how much is subtracted from BMI.")
+             #),
+             #
+             #shinyjs::hidden(p(
+             #  id = "centering_hidden3",
+             #  "Shift the slider around to several different values and see how the estimates and confidence intervals (CIs) change. When you change the slider value, for each term you'll see the original estimate (the point) and 95% CI (the bars), next to a new estimate and 95% CI after centering by the slider value. Then, answer the questions below the plot."
+             #)),
+             #
+             #br(),
+             #
+             #shinyjs::hidden(sliderInput("p1_slider", label = NULL,
+             #                            min = 0,
+             #                            max = 40,
+             #                            value = 0)
+             #),
+             #
+             #
+             #shinyjs::hidden(plotOutput("beta_centering")),
+             #
+             #br(),
+             #
+             #shinyjs::hidden(p(
+             #  id = "centering_hidden4",
+             #  strong("Question 7:"),
+             #  "Why do the estimates and CI widths change for only two of the terms?")
+             #),
+             #
+             #shinyjs::hidden(textAreaInput("p1q7", label = NULL,
+             #                              placeholder = "Write your insights...",
+             #                              width = "55%")
+             #),
+             #
+             #shinyjs::hidden(p(
+             #  id = "centering_hidden5",
+             #  strong("Question 8:"),
+             #  "What value results in the smallest CIs, and why? What values lead to the largest CIs, and why?")
+             #),
+             #
+             #shinyjs::hidden(textAreaInput("p1q8", label = NULL,
+             #                              placeholder = "Write your insights...",
+             #                              width = "55%")
+             #),
+             #
+             #br(),
+             #
+             #shinyjs::hidden(p(
+             #  id = "centering_hidden6",
+             #  strong("Question 9:"),
+             #  "Suppose we set c at the value of 20. Use the slider to find the estimated intercept and main effect for sex, and interpret the two of them in context.")
+             #),
+             #
+             #shinyjs::hidden(textAreaInput("p1q9", label = NULL,
+             #                              placeholder = "Write your insights...",
+             #                              width = "55%")
+             #),
              
              br(),
              
@@ -442,22 +442,22 @@ ui <- navbarPage(
              
              br(),
              
-             p(strong("Question 4:"),
-               "Finally, suppose we centered our years in high school predictor at the mean value in our dataset. Which coefficient estimate(s) would change because of this?"),
-             
-             
-             checkboxGroupInput("p2q4",
-                                label = NULL,
-                                choices = c("$$\\beta_0$$" = "beta_0",
-                                            "$$\\beta_1$$" = "beta_1",
-                                            "$$\\beta_2$$" = "beta_2",
-                                            "$$\\beta_3$$" = "beta_3")),
-             actionButton("p2q4_submit",
-                          label = "Submit"),
-             
-             shinyjs::hidden(htmlOutput("p2q4_correct")),
-             
-             br(),
+             #p(strong("Question 4:"),
+             #  "Finally, suppose we centered our years in high school predictor at the mean value in our dataset. Which coefficient estimate(s) would change because of this?"),
+             #
+             #
+             #checkboxGroupInput("p2q4",
+             #                   label = NULL,
+             #                   choices = c("$$\\beta_0$$" = "beta_0",
+             #                               "$$\\beta_1$$" = "beta_1",
+             #                               "$$\\beta_2$$" = "beta_2",
+             #                               "$$\\beta_3$$" = "beta_3")),
+             #actionButton("p2q4_submit",
+             #             label = "Submit"),
+             #
+             #shinyjs::hidden(htmlOutput("p2q4_correct")),
+             #
+             #br(),
            )
   ),
   
@@ -467,7 +467,9 @@ ui <- navbarPage(
            h2("Solutions"),
            
            downloadButton("report",
-                          label = "Download solutions"),
+                          # 6-12-24: change this button to now only download the
+                          # student's work and not the solutions
+                          label = "Download your work"),
            
            h2("Data"),
            
@@ -545,7 +547,8 @@ server <- function(input, output, session) {
   # BMI histogram for Part 1
   output$hist_bmi <- renderPlot({
     ggplot(data = lungs) +
-      geom_histogram(aes(x = bmi), bins = 30) +
+      geom_histogram(aes(x = bmi), bins = 30,
+                     fill = "grey", col = "black") +
       labs(x = "BMI",
            y = "Count",
            title = "Distribution of BMI") +
@@ -612,7 +615,8 @@ server <- function(input, output, session) {
   # histogram for Part 2
   output$hist_hs_yrs <- renderPlot({
     ggplot(data = math) +
-      geom_histogram(aes(x = hs_yrs), bins = 8) +
+      geom_histogram(aes(x = hs_yrs), bins = 8,
+                     fill = "grey", col = "black") +
       labs(x = "Years in high school",
            y = "Count",
            title = "Distribution of years in high school") +
@@ -898,15 +902,18 @@ server <- function(input, output, session) {
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
-      file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      file.copy("reports/report.Rmd", tempReport, overwrite = TRUE)
       
       # Set up parameters to pass to Rmd document
-      params <- list(p1q2 = input$p1q2,
+      params <- list(
+        p1q1_1 = input$p1q1_1,
+        p1q1_2 = input$p1q1_2,
+        p1q2 = input$p1q2,
                      p1q3 = input$p1q3,
                      p1q5 = input$p1q5,
-                     p1q7 = input$p1q7,
-                     p1q8 = input$p1q8,
-                     p1q9 = input$p1q9,
+                     #p1q7 = input$p1q7,
+                     #p1q8 = input$p1q8,
+                     #p1q9 = input$p1q9,
                      p2q1 = input$p2q1,
                      lungs = lungs,
                      math = math)
